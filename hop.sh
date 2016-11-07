@@ -8,13 +8,6 @@ clearscreen.
 lock throttle to mythrottle.
 lock steering to heading(0,90).
 
-if brakes
-{
-    print "Retracting airbrakes...".
-    brakes off.
-    wait 1.5.
-}.
-
 set mythrottle to 0.
 wait 0.5.
 print "Activating engine...".
@@ -73,10 +66,11 @@ until time:seconds - hoverStart >= hoverTime
     clearscreen.
     print "throttle:     " + mythrottle at (0,0).
     print "vertical:     " + ship:verticalspeed at (0,1).
-    print "fuel left:    " + fuel at (0,3).
-    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,4).
+    print "fuel left:    " + fuel at (0,2).
+    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,5).
 }
 
+clearscreen.
 set mythrottle to 0.
 
 lock TWR to (ship:maxthrust) / (mass * ship:sensors:grav:mag).
@@ -101,5 +95,7 @@ until ship:verticalspeed >= -1
 }
 set mythrottle to 0.0.
 rcs off.
+brakes off.
 clearscreen.
-wait 1.
+wait 3
+.
