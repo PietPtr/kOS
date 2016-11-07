@@ -1,8 +1,12 @@
 declare parameter height is 200.
 declare parameter hoverTime is 10.
+declare parameter countdown is false.
 
 declare function hover
 {
+    declare parameter targetv is 0.
+    declare parameter correction is 0.01.
+
     set mass to ship:mass.
     set accl to ship:sensors:grav:mag.
     set maxt to ship:maxthrust.
@@ -17,19 +21,18 @@ declare function hover
         }
     }.
 
-    if ship:verticalspeed < 0
+    if ship:verticalspeed < targetv
     {
-        set mythrottle to mythrottle + 0.01.
+        set mythrottle to mythrottle + correction.
     }
-    else if ship:verticalspeed > 0
+    else if ship:verticalspeed > targetv
     {
-        set mythrottle to mythrottle - 0.01.
+        set mythrottle to mythrottle - correction.
     }.
 
-    print "throttle:     " + mythrottle at (0,10).
-    print "vertical:     " + ship:verticalspeed at (0,11).
-    print "fuel left:    " + fuel at (0,12).
-    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,13).
+    print "throttle:   " + mythrottle at (0,10).
+    print "vertical:   " + ship:verticalspeed at (0,11).
+    print "fuel left:  " + fuel at (0,12).
 
 }
 
@@ -45,6 +48,20 @@ wait 0.5.
 print "Activating engine...".
 stage.
 
+set shipheight to 12.3.
+
+if countdown
+{
+    from {local count is 10.} until count = 0 step
+         {set count to count - 1.} do
+    {
+        print "..." + count.
+        wait 1.
+    }
+}
+
+
+
 rcs on.
 
 clearscreen.
@@ -56,7 +73,6 @@ set fuel to 10000.
 until ship:apoapsis >= height
 {
     print "apoapsis: " + ship:apoapsis at (0,0).
-    wait 0.1.
 }
 
 set mythrottle to 0.
@@ -72,10 +88,10 @@ brakes on.
 
 until time:seconds - hoverStart >= hoverTime
 {
-    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,1).
+    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,0).
     hover().
 }
-
+rcs off.
 clearscreen.
 set mythrottle to 0.
 
@@ -94,20 +110,34 @@ until alt:radar <= burnAlt + 12
     print "radar altitude:   " + alt:radar at (0,3).
     print "impact speed:     " + impactSpeed at (0,4).
 }
+clearscreen.
 
-until ship:verticalspeed >= -1
+rcs on.
+lock descent to -alt:radar / 5.
+
+until ship:verticalspeed >= -10
 {
     set mythrottle to 1.0.
+    print "SUICIDE BURN" at (0,0).
 }
 
-until False
+clearscreen.
+
+
+until alt:radar < shipheight
 {
-    hover().
+    hover(descent, 0.1).
+
+    print "radar altitude: " + alt:radar at (0,0).
+    print "throttle:       " + mythrottle at (0,1).
+    print "descent speed:  " + descent at (0,2).
 }
 
+print "Engine shutdown.".
+
+set mythrottle to 0.
 
 rcs off.
 brakes off.
+wait 60.
 clearscreen.
-wait 3
-.
