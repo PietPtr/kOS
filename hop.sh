@@ -36,6 +36,8 @@ declare function hover
 
 }
 
+set ship:control:pilotmainthrottle to 0.
+
 set margin to 1.
 
 clearscreen.
@@ -73,6 +75,8 @@ set fuel to 10000.
 until ship:apoapsis >= height
 {
     print "apoapsis: " + ship:apoapsis at (0,0).
+
+
 }
 
 set mythrottle to 0.
@@ -139,5 +143,5 @@ set mythrottle to 0.
 
 rcs off.
 brakes off.
-wait 60.
+wait 5.
 clearscreen.
