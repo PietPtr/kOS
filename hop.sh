@@ -1,4 +1,4 @@
-declare parameter height is 200.
+declare parameter height is 500.
 declare parameter hoverTime is 10.
 declare parameter countdown is false.
 
@@ -43,7 +43,7 @@ set margin to 1.
 clearscreen.
 
 lock throttle to mythrottle.
-lock steering to heading(45,90).
+lock steering to heading(0,90).
 
 set mythrottle to 0.
 wait 0.5.
@@ -75,8 +75,6 @@ set fuel to 10000.
 until ship:apoapsis >= height
 {
     print "apoapsis: " + ship:apoapsis at (0,0).
-
-
 }
 
 set mythrottle to 0.
@@ -95,6 +93,7 @@ until time:seconds - hoverStart >= hoverTime
     print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,0).
     hover().
 }
+
 rcs off.
 clearscreen.
 set mythrottle to 0.
@@ -128,9 +127,9 @@ until ship:verticalspeed >= -10
 clearscreen.
 
 
-until alt:radar < shipheight
+until alt:radar <= shipheight
 {
-    hover(descent, 0.1).
+    hover(descent, 0.2).
 
     print "radar altitude: " + alt:radar at (0,0).
     print "throttle:       " + mythrottle at (0,1).
