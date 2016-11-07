@@ -17,13 +17,11 @@ stage.
 
 clearscreen.
 
-print "Lifting off in 1 second...". wait 1.
-
 set mythrottle to 1.
 set descentspeed to 0.5.
 set fuel to 10000.
 
-until ship:apoapsis >= height - 10
+until ship:apoapsis >= height
 {
     print "apoapsis: " + ship:apoapsis at (0,0).
     wait 0.1.
@@ -37,6 +35,8 @@ until ship:verticalspeed <= 0
 }
 
 set hoverStart to time:seconds.
+
+brakes on.
 
 until time:seconds - hoverStart >= hoverTime
 {
@@ -106,5 +106,5 @@ until ship:verticalspeed >= -1
 }
 set mythrottle to 0.0.
 rcs off.
-
-wait 10000.
+clearscreen.
+wait 1.
