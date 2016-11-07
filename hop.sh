@@ -9,6 +9,12 @@ lock throttle to mythrottle.
 lock steering to heading(0,90).
 
 rcs on.
+if brakes
+{
+    print "Retracting airbrakes...".
+    brakes off.
+    wait 1.5.
+}.
 
 set mythrottle to 0.
 wait 0.5.
