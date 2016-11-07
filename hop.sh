@@ -8,7 +8,6 @@ clearscreen.
 lock throttle to mythrottle.
 lock steering to heading(0,90).
 
-rcs on.
 if brakes
 {
     print "Retracting airbrakes...".
@@ -20,6 +19,8 @@ set mythrottle to 0.
 wait 0.5.
 print "Activating engine...".
 stage.
+
+rcs on.
 
 clearscreen.
 
@@ -51,25 +52,6 @@ until time:seconds - hoverStart >= hoverTime
     set maxt to ship:maxthrust.
     set mythrottle to (mass * accl) / maxt.
 
-    set targetv to 0.
-    if ship:altitude < height - margin
-    {
-        set targetv to descentspeed.
-    }
-    else if ship:altitude > height + margin
-    {
-        set targetv to -1 * descentspeed.
-    }
-
-    if ship:verticalspeed < targetv
-    {
-        set mythrottle to mythrottle + 0.01.
-    }
-    else if ship:verticalspeed > targetv
-    {
-        set mythrottle to mythrottle - 0.01.
-    }.
-
     set reslist to stage:resources.
     for res in reslist
     {
@@ -79,11 +61,18 @@ until time:seconds - hoverStart >= hoverTime
         }
     }.
 
+    if ship:verticalspeed < 0
+    {
+        set mythrottle to mythrottle + 0.01.
+    }
+    else if ship:verticalspeed > 0
+    {
+        set mythrottle to mythrottle - 0.01.
+    }.
 
     clearscreen.
     print "throttle:     " + mythrottle at (0,0).
     print "vertical:     " + ship:verticalspeed at (0,1).
-    print "target speed: " + targetv at (0,2).
     print "fuel left:    " + fuel at (0,3).
     print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,4).
 }
