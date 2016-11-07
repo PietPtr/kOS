@@ -1,12 +1,44 @@
-declare parameter height is 500.
-declare parameter hoverTime is 30.
+declare parameter height is 200.
+declare parameter hoverTime is 10.
+
+declare function hover
+{
+    set mass to ship:mass.
+    set accl to ship:sensors:grav:mag.
+    set maxt to ship:maxthrust.
+    set mythrottle to (mass * accl) / maxt.
+
+    set reslist to stage:resources.
+    for res in reslist
+    {
+        if res:name = "LiquidFuel"
+        {
+            set fuel to res:amount.
+        }
+    }.
+
+    if ship:verticalspeed < 0
+    {
+        set mythrottle to mythrottle + 0.01.
+    }
+    else if ship:verticalspeed > 0
+    {
+        set mythrottle to mythrottle - 0.01.
+    }.
+
+    print "throttle:     " + mythrottle at (0,10).
+    print "vertical:     " + ship:verticalspeed at (0,11).
+    print "fuel left:    " + fuel at (0,12).
+    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,13).
+
+}
 
 set margin to 1.
 
 clearscreen.
 
 lock throttle to mythrottle.
-lock steering to heading(0,90).
+lock steering to heading(45,90).
 
 set mythrottle to 0.
 wait 0.5.
@@ -40,34 +72,8 @@ brakes on.
 
 until time:seconds - hoverStart >= hoverTime
 {
-    set mass to ship:mass.
-    set accl to ship:sensors:grav:mag.
-    set maxt to ship:maxthrust.
-    set mythrottle to (mass * accl) / maxt.
-
-    set reslist to stage:resources.
-    for res in reslist
-    {
-        if res:name = "LiquidFuel"
-        {
-            set fuel to res:amount.
-        }
-    }.
-
-    if ship:verticalspeed < 0
-    {
-        set mythrottle to mythrottle + 0.01.
-    }
-    else if ship:verticalspeed > 0
-    {
-        set mythrottle to mythrottle - 0.01.
-    }.
-
-    clearscreen.
-    print "throttle:     " + mythrottle at (0,0).
-    print "vertical:     " + ship:verticalspeed at (0,1).
-    print "fuel left:    " + fuel at (0,2).
-    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,5).
+    print "landing in:   " + (hoverTime - (time:seconds - hoverStart)) at (0,1).
+    hover().
 }
 
 clearscreen.
@@ -93,7 +99,13 @@ until ship:verticalspeed >= -1
 {
     set mythrottle to 1.0.
 }
-set mythrottle to 0.0.
+
+until False
+{
+    hover().
+}
+
+
 rcs off.
 brakes off.
 clearscreen.
