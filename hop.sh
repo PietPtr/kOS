@@ -72,6 +72,18 @@ set mythrottle to 1.
 set descentspeed to 0.5.
 set fuel to 10000.
 
+when abs(ship:groundspeed) > 0.1 then
+{
+    print ship:velocity:surface:y at (0,32).
+    return true.
+}
+
+when abs(ship:groundspeed) < 0.1 then
+{
+    print "neglegible horizontal velocity." at (0,32).
+    return true.
+}
+
 until ship:apoapsis >= height
 {
     print "apoapsis: " + ship:apoapsis at (0,0).
