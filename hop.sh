@@ -43,7 +43,7 @@ set margin to 1.
 clearscreen.
 
 lock throttle to mythrottle.
-lock steering to heading(0,90).
+lock steering to up + R(0, 0, 180).
 
 set mythrottle to 0.
 wait 0.5.
@@ -72,15 +72,29 @@ set mythrottle to 1.
 set descentspeed to 0.5.
 set fuel to 10000.
 
-when abs(ship:groundspeed) > 0.1 then
+when false then // abs(ship:groundspeed) > 0.01 then
 {
-    print ship:velocity:surface:y at (0,32).
-    return true.
-}
+    set sinYaw to sin(ship:up:yaw).
+    set cosYaw to cos(ship:up:yaw).
+    set sinPitch to sin(ship:up:pitch).
+    set cosPitch to cos(ship:up:pitch).
 
-when abs(ship:groundspeed) < 0.1 then
-{
-    print "neglegible horizontal velocity." at (0,32).
+    set unitVectorEast to V(-cosYaw, 0, sinYaw).
+    set unitVectorNorth to V(-sinYaw*sinPitch, cosPitch, -cosYaw*sinPitch).
+
+    set shipVelocitySurface to ship:velocity:surface.
+    set speedEast to vdot(shipVelocitySurface, unitVectorEast).
+    set speedNorth to vdot(shipVelocitySurface, unitVectorNorth).
+
+    print "east:  " + speedEast at (0,31).
+    print "north: " + speedNorth at (0,32).
+
+
+    set pitch to -speedNorth * 0.1.
+    set yaw to -speedEast * 0.1.
+
+    lock steering to up + R(pitch, yaw, 180).
+
     return true.
 }
 
