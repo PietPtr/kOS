@@ -118,7 +118,8 @@ clearscreen.
 rcs on.
 lock descent to -alt:radar / 5.
 
-until ship:verticalspeed >= -10
+
+until ship:verticalspeed >= -2
 {
     set mythrottle to 1.0.
     print "SUICIDE BURN" at (0,0).
