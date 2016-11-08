@@ -1,6 +1,6 @@
 // takes the rocket to a predefined height, hovers there and takes pilot input
 
-declare parameter height is 500.
+declare parameter height is 150.
 
 declare function hover
 {
@@ -38,10 +38,12 @@ declare function hover
 
 set ship:control:pilotmainthrottle to 0.
 
+rcs on.
+
 clearscreen.
 
 lock throttle to mythrottle.
-lock steering to heading(0,90).
+lock steering to Up + R(0,0,180).
 
 set mythrottle to 0.
 wait 0.5.
@@ -49,6 +51,15 @@ print "Activating engine...".
 stage.
 
 set mythrottle to 1.
+
+when ship:control:pilotyaw = -1 then
+{
+    lock steering to up + R(5, 0, 180).
+}
+when ship:control:pilotyaw = 1 then
+{
+    lock steering to up + R(-5, 0, 180).
+}
 
 until ship:apoapsis >= height
 {
@@ -70,5 +81,5 @@ set mythrottle to 1.
 
 until false
 {
-    hover().
+    hover(0, 0.1).
 }
