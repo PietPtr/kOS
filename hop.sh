@@ -106,7 +106,6 @@ until time:seconds - hoverStart >= hoverTime
     hover().
 }
 
-rcs off.
 clearscreen.
 set mythrottle to 0.
 
