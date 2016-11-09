@@ -36,4 +36,6 @@ until atPeriapsis
 
 set kuniverse:timewarp:rate to 1.
 
+until kuniverse:timewarp:rate = 1 { wait 0.1. }
+
 clearscreen.
