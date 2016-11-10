@@ -72,4 +72,3 @@ until ship:periapsis > (ap - margin)
 set mythrottle to 0.
 
 wait 10000.
-

@@ -48,7 +48,9 @@ lock steering to up + R(0, 0, 180).
 set mythrottle to 0.
 wait 0.5.
 print "Activating engine...".
-stage.
+
+list engines in eng.
+eng[0]:activate.
 
 set shipheight to 12.3.
 
