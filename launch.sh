@@ -17,6 +17,8 @@ set targetSpeed to sqrt(ship:body:mu / (ap + ship:body:radius)).
 
 clearscreen.
 
+set ship:control:pilotmainthrottle to 0.
+
 set mythrottle to 1.0.
 
 lock throttle to mythrottle.
@@ -29,8 +31,8 @@ when maxthrust = 0 then
 {
     print "staging...".
     stage.
+    set mythrottle to 1.0.
     preserve.
-    wait 1.
 }.
 
 set mysteer to heading(90,90).
@@ -53,14 +55,7 @@ until ship:periapsis > 140000 and ship:apoapsis < (ap + margin)
 lock steering to ship:prograde.
 set mythrottle to 0.
 
-print "waiting for apoaps..." at (0,0).
-until ship:altitude > ship:apoapsis - (margin / 50)
-{
-    print "vertical speed: " + ship:verticalspeed at (0,1).
-    wait 0.5.
-}
-
-clearscreen.
+run warpap.sh.
 
 until ship:periapsis > (ap - margin)
 {
