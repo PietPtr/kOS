@@ -1,9 +1,6 @@
-declare parameter periapsis is 500.
-declare parameter apoapsis  is 500.
+declare parameter periapsis is 500000.
+declare parameter apoapsis  is 500000.
 declare parameter mainIsRCS is false.
-
-set periapsis to periapsis * 1000.
-set apoapsis  to apoapsis  * 1000.
 
 if periapsis > apoapsis
 {
