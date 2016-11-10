@@ -1,5 +1,8 @@
-declare parameter periapsis is 500000.
-declare parameter apoapsis is  500000.
+declare parameter periapsis is 500.
+declare parameter apoapsis  is 500.
+
+set periapsis to periapsis * 1000.
+set apoapsis  to apoapsis  * 1000.
 
 if periapsis > apoapsis
 {
@@ -8,7 +11,7 @@ if periapsis > apoapsis
     wait 1000000.
 }
 
-declare function burnUntill
+declare function burnUntil
 {
     declare parameter v1.
     declare parameter v2.
@@ -47,6 +50,8 @@ set ship:control:pilotmainthrottle to 0.
 
 rcs on.
 
+sas off.
+
 clearscreen.
 
 lock throttle to 0.
@@ -63,7 +68,7 @@ set a  to ((ship:altitude + ship:body:radius) +
            (apoapsis + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
-burnUntill(v1, v2).
+burnUntil(v1, v2).
 
 
 // ----------- SECOND BURN -----------
@@ -91,4 +96,4 @@ else
 }.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
-burnUntill(v1, v2).
+burnUntil(v1, v2).
