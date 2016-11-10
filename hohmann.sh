@@ -17,10 +17,13 @@ declare function burnUntil
     declare parameter v1.
     declare parameter v2.
 
+    print "Reorienting...".
+
     if (v2 - v1 > 0)
     {
         lock steering to ship:prograde.
         wait 5.
+        print "Burning!".
 
         until ship:velocity:orbit:mag >= v2
         {
@@ -31,12 +34,14 @@ declare function burnUntil
     {
         lock steering to ship:retrograde.
         wait 5.
+        print "Burning!".
 
         until ship:velocity:orbit:mag <= v2
         {
             set mythrottle to 0.1.
         }
     }.
+
 
     set mythrottle to 0.
 
@@ -55,9 +60,24 @@ sas off.
 
 clearscreen.
 
+set mythrottle to 0.
+
 if mainIsRCS
 {
-    lock ship:control:fore to mythrottle.
+    print "Main engine is the RCS.".
+    set previousThrottle to mythrottle.
+
+    when previousThrottle <> mythrottle then
+    {
+        print "Adjusting RCS...".
+        print "mythrottle: " + mythrottle.
+        print "prevthortt: " + previousThrottle.
+        if mythrottle > 0 { set ship:control:fore to 1. }
+        else { set ship:control:fore to 0. }.
+
+        set previousThrottle to mythrottle.
+        return true.
+    }
 }
 else
 {
@@ -84,6 +104,7 @@ set a  to ((ship:altitude + ship:body:radius) +
            (apoapsis + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
+print "Starting first burn.".
 burnUntil(v1, v2).
 
 
@@ -104,4 +125,5 @@ set a to ((periapsis + ship:body:radius) +
           (apoapsis  + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
+print "Starting second burn.".
 burnUntil(v1, v2).
