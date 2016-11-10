@@ -1,5 +1,6 @@
 declare parameter periapsis is 500.
 declare parameter apoapsis  is 500.
+declare parameter mainIsRCS is false.
 
 set periapsis to periapsis * 1000.
 set apoapsis  to apoapsis  * 1000.
@@ -23,7 +24,7 @@ declare function burnUntil
 
         until ship:velocity:orbit:mag >= v2
         {
-            lock throttle to 0.1.
+            set mythrottle to 0.1.
         }
     }.
     if (v2 - v1 < 0)
@@ -33,13 +34,13 @@ declare function burnUntil
 
         until ship:velocity:orbit:mag <= v2
         {
-            lock throttle to 0.1.
+            set mythrottle to 0.1.
         }
     }.
 
-    lock throttle to 0.
+    set mythrottle to 0.
 
-    until throttle = 0 { wait 0.1. }
+    until mythrottle = 0 { wait 0.1. }
 
     wait 1.
 }
@@ -54,12 +55,27 @@ sas off.
 
 clearscreen.
 
-lock throttle to 0.
+if mainIsRCS
+{
+    lock ship:control:fore to mythrottle.
+}
+else
+{
+    lock throttle to mythrottle.
+}
 
 
 // ----------- FIRST BURN -----------
 
-run warppe.sh.
+set circularOrbitVelocity to
+    sqrt(ship:body:mu / (ship:altitude + ship:body:radius)).
+
+if abs(circularOrbitVelocity - ship:velocity:orbit:mag) > 30
+{
+    run warppe.sh.
+}
+
+set ap1 to ship:apoapsis.
 
 set v1 to ship:velocity:orbit:mag.
 set mu to ship:body:mu.
@@ -78,22 +94,14 @@ set pe1 to ship:altitude.
 print "Pe1: " + pe1 at (0,32).
 print "Pe2: " + periapsis at (0,33).
 
-if pe1 < periapsis { run warpap.sh. }.
-else { run warppe.sh. }
+if pe1 > periapsis and ap1 > apoapsis { run warppe.sh. }.
+else { run warpap.sh. }
 
 set v1 to ship:velocity:orbit:mag.
 set mu to ship:body:mu.
 set r  to ship:body:radius + ship:altitude.
-if pe1 < periapsis
-{
-    set a to ((periapsis + ship:body:radius) +
-               (ship:altitude + body:radius)) / 2.
-}
-else
-{
-    set a to ((ship:altitude + ship:body:radius) +
-               (apoapsis + ship:body:radius)) / 2.
-}.
+set a to ((periapsis + ship:body:radius) +
+          (apoapsis  + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
 burnUntil(v1, v2).
