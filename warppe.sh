@@ -1,41 +1,13 @@
-declare parameter warprate is 100.
+set kuniverse:timewarp:rate to 1000.
 
-set kuniverse:timewarp:rate to warprate.
+wait until eta:periapsis <= 600.
 
-clearscreen.
+set kuniverse:timewarp:rate to 100.
 
-set lastv to ship:velocity:orbit:mag.
-set acc to false.
-set wasAcc to false.
-lock dec to not acc.
-set atPeriapsis to false.
+wait until eta:periapsis <= 60.
 
-until atPeriapsis
-{
-    print "Warping to periaps..." at (0,0).
-    print "Accelerating: " + acc at (0,1).
-    print "lastv - v:    " + (lastv - ship:velocity:orbit:mag) at (0,2).
+set kuniverse:timewarp:rate to 10.
 
-    if lastv - ship:velocity:orbit:mag > 0          // Decelerating
-    {
-        set acc to false.
-    }.
-    if lastv - ship:velocity:orbit:mag < 0
-    {
-        set acc to true.
-    }.
-
-    if wasAcc and not acc
-    {
-        set atPeriapsis to true.
-    }.
-
-    set lastv to ship:velocity:orbit:mag.
-    set wasAcc to acc.
-}
+wait until eta:periapsis <= 6.
 
 set kuniverse:timewarp:rate to 1.
-
-until kuniverse:timewarp:rate = 1 { wait 0.1. }
-
-clearscreen.
