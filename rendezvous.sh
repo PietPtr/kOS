@@ -31,6 +31,8 @@ declare function getInterceptAngle
 
 declare function reorient
 {
+    rcs off.
+
     declare parameter direction.
 
     lock steering to direction.
@@ -38,6 +40,8 @@ declare function reorient
     wait 1.
 
     wait until ship:angularvel:mag < 0.05.
+
+    rcs on.
 }
 
 // ----------- TRIGGERS -----------
@@ -56,98 +60,17 @@ set ship:control:fore to 0.
 
 // ----------- HOHMANN -----------
 
-set phaseAngle to
-    (target:orbit:trueanomaly + target:orbit:argumentofperiapsis) -
-    (ship:orbit:trueanomaly + ship:orbit:argumentofperiapsis).
-
-if phaseAngle < 0 { set phaseAngle to phaseAngle + 360. }.
-
-set catchupHeight to 0.
-
-if phaseAngle < 180 { set catchupHeight to phaseAngle * 1000 + 10000. }.
-else { set catchupHeight to (360 - phaseAngle) * 1000 - 10000. }.
-
-if phaseAngle < 180
-{
-    run hohmann.sh(target:orbit:periapsis - catchupHeight,
-                   target:orbit:apoapsis - catchupHeight, true).
-}
-else
-{
-    run hohmann.sh(target:orbit:periapsis + catchupHeight,
-                   target:orbit:apoapsis + catchupHeight, true).
-}.
+run "rendezvous-hohmann.sh".
 
 
 // ----------- INTERCEPT -----------
 
-lock originPeriod to 2 * pi * sqrt(ship:orbit:semimajoraxis ^ 3 / ship:body:mu).
-lock targetPeriod to 2 * pi * sqrt(target:orbit:semimajoraxis ^ 3 / target:body:mu).
-
-set interceptAngle to 180.
-
-set kuniverse:timewarp:rate to 10000.
-
-until getInterceptAngle() <= 10
-{
-    wait 0.1.
-}
-
-set kuniverse:timewarp:rate to 100.
-
-until getInterceptAngle() <= 1
-{
-    wait 0.1.
-}
-
-set kuniverse:timewarp:rate to 1.
-
-run hohmann.sh(target:orbit:periapsis, target:orbit:apoapsis, true).
+run "rendezvous-intercept.sh".
 
 // ----------- APPROACH -----------
 
 lock distance to (ship:orbit:position - target:orbit:position):mag.
-lock relativeSpeed to (ship:velocity:orbit - target:velocity:orbit):mag.
 
-until distance < 100
-{
-    print "point retrograde".
-    reorient(target:velocity:orbit - ship:velocity:orbit).
-
-    print "cancel velocity".
-    set previousSpeed to relativeSpeed.
-
-    set ship:control:fore to 0.5.
-
-    until previousSpeed - relativeSpeed < 0
-    {
-        set previousSpeed to relativeSpeed.
-        wait 0.1.
-    }
-
-    set ship:control:fore to 0.
-
-    print "point at target".
-    reorient(target:orbit:position - ship:orbit:position).
-
-    print "burn to safe speed".
-    set ship:control:fore to 0.5.
-    set maxSpeed to distance / 1000.
-    if maxSpeed > 50 { set maxSpeed to 50. }.
-    wait until relativeSpeed > maxSpeed.
-    set ship:control:fore to 0.
-    wait 1.
-
-    print "speed up time until distance is growing".
-    set previousDistance to distance.
-    set kuniverse:timewarp:rate to 100.
-    until distance - previousDistance > 0
-    {
-        print distance - previousDistance.
-        set previousDistance to distance.
-        wait 0.01.
-    }
-    set kuniverse:timewarp:rate to 1.
-
-    print "goto 1".
+until distance < 100 {
+    run "rendezvous-approach.sh".
 }
