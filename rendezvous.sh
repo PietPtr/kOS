@@ -35,7 +35,7 @@ declare function reorient
 
     lock steering to direction.
 
-    wait 0.1.
+    wait 1.
 
     wait until ship:angularvel:mag < 0.05.
 }
@@ -106,34 +106,48 @@ run hohmann.sh(target:orbit:periapsis, target:orbit:apoapsis, true).
 
 // ----------- APPROACH -----------
 
-lock distance to (ship:position - target:position):mag.
+lock distance to (ship:orbit:position - target:orbit:position):mag.
+lock relativeSpeed to (ship:velocity:orbit - target:velocity:orbit):mag.
 
 until distance < 100
 {
-    // point retrograde
+    print "point retrograde".
     reorient(target:velocity:orbit - ship:velocity:orbit).
 
-    // cancel velocity
-    set previousSpeed to (ship:velocity:orbit - target:velocity:orbit):mag.
+    print "cancel velocity".
+    set previousSpeed to relativeSpeed.
 
     set ship:control:fore to 0.5.
 
-    until previousSpeed - (ship:velocity:orbit - target:velocity:orbit):mag < 0
+    until previousSpeed - relativeSpeed < 0
     {
-        set previousSpeed to (ship:velocity:orbit - target:velocity:orbit):mag.
+        set previousSpeed to relativeSpeed.
         wait 0.1.
     }
 
-    set ship:control:fore to 0.1.
+    set ship:control:fore to 0.
 
-    // point at target
-    sas on.
-    set navmode to "target".
+    print "point at target".
+    reorient(target:orbit:position - ship:orbit:position).
 
+    print "burn to safe speed".
+    set ship:control:fore to 0.5.
+    set maxSpeed to distance / 1000.
+    if maxSpeed > 50 { set maxSpeed to 50. }.
+    wait until relativeSpeed > maxSpeed.
+    set ship:control:fore to 0.
+    wait 1.
 
-    // burn to safe speed
+    print "speed up time until distance is growing".
+    set previousDistance to distance.
+    set kuniverse:timewarp:rate to 100.
+    until distance - previousDistance > 0
+    {
+        print distance - previousDistance.
+        set previousDistance to distance.
+        wait 0.01.
+    }
+    set kuniverse:timewarp:rate to 1.
 
-    // speed up time until distance is growing
-
-    // goto 1
+    print "goto 1".
 }
