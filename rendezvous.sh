@@ -69,8 +69,4 @@ run "rendezvous-intercept.sh".
 
 // ----------- APPROACH -----------
 
-lock distance to (ship:orbit:position - target:orbit:position):mag.
-
-until distance < 100 {
-    run "rendezvous-approach.sh".
-}
+run "rendezvous-approach.sh".
