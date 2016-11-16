@@ -4,16 +4,14 @@ declare parameter margin is 10000.
 declare function getPitch
 {
     set h to ship:apoapsis.
-    set pitch to 90 - (h / ap * 90).
+    set pitch to 90 - (h / 240000 * 90).
     if pitch < 0
     {
-        set pitch to pitch * 35.
+        set pitch to pitch * 5.
     }
     print "pitch: " + pitch at (0,16).
     return pitch.
 }.
-
-set targetSpeed to sqrt(ship:body:mu / (ap + ship:body:radius)).
 
 clearscreen.
 
@@ -38,7 +36,7 @@ when maxthrust = 0 then
 set mysteer to heading(90,90).
 lock steering to mysteer.
 
-until ship:periapsis > 140000 and ship:apoapsis < (ap + margin)
+until ship:periapsis > 140000
 {
     set mysteer to heading(90, getPitch()).
 
@@ -55,15 +53,8 @@ until ship:periapsis > 140000 and ship:apoapsis < (ap + margin)
 lock steering to ship:prograde.
 set mythrottle to 0.
 
-run warpap.sh.
+wait 1.
 
-until ship:periapsis > (ap - margin)
-{
-    print "circularizing, pe = " + ship:periapsis + " of " + (ap - margin)
-         at (0,0).
-    set mythrottle to 0.1.
-}.
+run hohmann.sh(ap, ap, false).
 
 set mythrottle to 0.
-
-wait 10000.
