@@ -1,5 +1,6 @@
 declare parameter ap is 240000.
 declare parameter margin is 10000.
+declare parameter targetName is "tgt".
 
 declare function getPitch
 {
@@ -15,7 +16,19 @@ declare function getPitch
 
 clearscreen.
 
+set target to vessel(targetName).
+
 set ship:control:pilotmainthrottle to 0.
+
+// wait for relative inclination = 0
+set kuniverse:timewarp:rate to 10000.
+wait until round(ship:orbit:lan) = round(target:orbit:lan) - 25.
+set kuniverse:timewarp:rate to 100.
+wait until round(ship:orbit:lan) = round(target:orbit:lan) - 1.
+set kuniverse:timewarp:rate to 1.
+wait until kuniverse:timewarp:rate = 1.
+
+print "ready to launch.".
 
 set mythrottle to 1.0.
 
@@ -30,7 +43,15 @@ when maxthrust = 0 then
     print "staging...".
     stage.
     set mythrottle to 1.0.
-    preserve.
+    stage.
+    if stage:count = 1
+    {
+        return false.
+    }
+    else
+    {
+        return true.
+    }
 }.
 
 set mysteer to heading(90,90).
@@ -55,6 +76,8 @@ set mythrottle to 0.
 
 wait 1.
 
-run hohmann.sh(ap, ap, false).
-
 set mythrottle to 0.
+
+set ship:control:pilotmainthrottle to 0.
+
+stage.

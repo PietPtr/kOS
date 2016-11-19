@@ -1,6 +1,3 @@
-lock distance to (ship:orbit:position - target:orbit:position):mag.
-lock relativeSpeed to (ship:velocity:orbit - target:velocity:orbit):mag.
-
 until distance < 100
 {
     print (time:seconds) + ": point retrograde".
@@ -15,7 +12,12 @@ until distance < 100
     until previousSpeed - relativeSpeed < 0
     {
         set previousSpeed to relativeSpeed.
-        wait 0.01.
+        if relativeSpeed > 10
+        {
+            lock steering to (target:velocity:orbit -
+                              ship:velocity:orbit).
+        }
+        wait 0.1.
     }
 
     set ship:control:fore to 0.
@@ -24,10 +26,13 @@ until distance < 100
     reorient(target:orbit:position - ship:orbit:position).
 
     print (time:seconds) + ": burn to safe speed".
-    set ship:control:fore to 0.5.
+    set ship:control:fore to 1.
     set goalSpeed to distance / 1000.
     if goalSpeed > 50 { set goalSpeed to 50. }.
-    if distance < 1200 { set goalSpeed to 4. }.
+    if distance < 4000 { set goalSpeed to 4. }.
+    if distance < 1000 { set goalSpeed to 2. }.
+    print "relative speed: " + relativeSpeed.
+    print "goal speed:     " + goalSpeed.
 
     wait until relativeSpeed >= goalSpeed.
     set ship:control:fore to 0.

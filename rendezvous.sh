@@ -8,27 +8,6 @@
 
 declare parameter targetName is "tgt".
 
-declare function getInterceptAngle
-{
-    set phaseAngle to
-        (target:orbit:trueanomaly + target:orbit:argumentofperiapsis) -
-        (ship:orbit:trueanomaly + ship:orbit:argumentofperiapsis).
-
-    set originRadius to
-        (ship:orbit:semiminoraxis + ship:orbit:semimajoraxis)/2.
-    set targetRadius to
-        (target:orbit:semiminoraxis + target:orbit:semimajoraxis)/2.
-
-    set anglet to 180 * (1.0 -
-                  ((originRadius + targetRadius) / (2 * targetRadius))^1.5).
-
-    set interceptAngle to phaseAngle - anglet.
-
-    if interceptAngle < 0 { set interceptAngle to 360 + interceptAngle. }.
-
-    return interceptAngle.
-}
-
 declare function reorient
 {
     rcs off.
@@ -60,15 +39,17 @@ set ship:control:fore to 0.
 
 ship:partstagged("cpu")[0]:controlfrom().
 
+lock distance to (ship:orbit:position - target:orbit:position):mag.
+lock relativeSpeed to (ship:velocity:orbit - target:velocity:orbit):mag.
+
 // ----------- HOHMANN -----------
 
-//run "rendezvous-hohmann.sh".
-
+run "rendezvous-hohmann.sh".
 
 // ----------- INTERCEPT -----------
 
-//run "rendezvous-intercept.sh".
+run "rendezvous-intercept.sh".
 
 // ----------- APPROACH -----------
 
-//run "rendezvous-approach.sh".
+// run "rendezvous-approach.sh".
