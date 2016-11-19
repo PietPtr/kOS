@@ -58,15 +58,17 @@ sas off.
 
 set ship:control:fore to 0.
 
+ship:partstagged("cpu")[0]:controlfrom().
+
 // ----------- HOHMANN -----------
 
-run "rendezvous-hohmann.sh".
+//run "rendezvous-hohmann.sh".
 
 
 // ----------- INTERCEPT -----------
 
-run "rendezvous-intercept.sh".
+//run "rendezvous-intercept.sh".
 
 // ----------- APPROACH -----------
 
-run "rendezvous-approach.sh".
+//run "rendezvous-approach.sh".

@@ -10,12 +10,12 @@ until distance < 100
     print (time:seconds) + ": relativeSpeed: " + relativeSpeed.
     set previousSpeed to relativeSpeed.
 
-    set ship:control:fore to 0.5.
+    set ship:control:fore to 1.
 
     until previousSpeed - relativeSpeed < 0
     {
         set previousSpeed to relativeSpeed.
-        wait 0.1.
+        wait 0.01.
     }
 
     set ship:control:fore to 0.
