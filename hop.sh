@@ -102,14 +102,14 @@ when false then // abs(ship:groundspeed) > 0.01 then
 
 until ship:apoapsis >= height
 {
-    print "apoapsis: " + ship:apoapsis at (0,0).
+    print "apoapsis: " + ship:apoapsis + MSGFILL at (0,0).
 }
 
 set mythrottle to 0.
 
 until ship:verticalspeed <= 0
 {
-    print "vertical speed: " + ship:verticalspeed at (0,0).
+    print "vertical speed: " + ship:verticalspeed + MSGFILL at (0,0).
 }
 
 set hoverStart to time:seconds.
