@@ -15,6 +15,9 @@ declare function getInterceptAngle
     set interceptAngle to phaseAngle - anglet.
 
     if interceptAngle < 0 { set interceptAngle to 360 + interceptAngle. }.
+    if interceptAngle > 360 { set interceptAngle to interceptAngle - 360. }.
+
+    print "interceptAngle: " + interceptAngle at (0, 11).
 
     return interceptAngle.
 }
@@ -24,13 +27,13 @@ declare function burnUntil
     declare parameter v1.
     declare parameter v2.
 
-    print "Reorienting...".
+    print "Reorienting..." at (0,3).
 
     if (v2 - v1 > 0)
     {
         lock steering to ship:prograde.
         wait 5.
-        print "Burning!".
+        print "Burning!" at (0,3).
 
         until ship:velocity:orbit:mag >= v2
         {
@@ -41,7 +44,7 @@ declare function burnUntil
     {
         lock steering to ship:retrograde.
         wait 5.
-        print "Burning!".
+        print "Burning!" at (0,3).
 
         until ship:velocity:orbit:mag <= v2
         {
@@ -62,10 +65,11 @@ set interceptAngle to 180.
 
 set kuniverse:timewarp:rate to 1000.
 wait until kuniverse:timewarp:rate = 1000.
+wait 100.
 set kuniverse:timewarp:rate to 10000.
 wait until kuniverse:timewarp:rate = 10000.
 
-print "Waiting until interceptAngle is 0...".
+print "Waiting until interceptAngle is 0..." at (0,3).
 until getInterceptAngle() <= 10
 {
     wait 0.1.
@@ -90,7 +94,7 @@ set a  to ((ship:altitude + ship:body:radius) +
            (target:orbit:apoapsis + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
-print "Starting first burn.".
+print "Starting first burn." at (0,3).
 burnUntil(v1, v2).
 
 set kuniverse:timewarp:rate to 1000.
@@ -99,7 +103,7 @@ set previousDistance to distance.
 
 until distance - previousDistance > 0
 {
-    print distance - previousDistance at (0, 16).
+    print distance - previousDistance at (0, 12).
     set previousDistance to distance.
     wait 0.01.
 }

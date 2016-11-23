@@ -5,7 +5,7 @@ declare parameter mainIsRCS is false.
 if periapsis > apoapsis
 {
     print "Periapsis is bigger than apoapsis. Please rerun the program with " +
-          "correct arguments." at (0,16).
+          "correct arguments." + MSGFILL at (0,0).
     wait 1000000.
 }
 
@@ -14,13 +14,13 @@ declare function burnUntil
     declare parameter v1.
     declare parameter v2.
 
-    print "Reorienting...".
+    print "Reorienting..." at (0,3).
 
     if (v2 - v1 > 0)
     {
         lock steering to ship:prograde.
         wait 5.
-        print "Burning!".
+        print "Burning!     " at (0,3).
 
         until ship:velocity:orbit:mag >= v2
         {
@@ -31,7 +31,7 @@ declare function burnUntil
     {
         lock steering to ship:retrograde.
         wait 5.
-        print "Burning!".
+        print "Burning!     " at (0,3).
 
         until ship:velocity:orbit:mag <= v2
         {
@@ -61,14 +61,14 @@ set mythrottle to 0.
 
 if mainIsRCS
 {
-    print "Main engine is the RCS.".
+    print "Main engine is the RCS." + MSGFILL at (0,0).
     set previousThrottle to mythrottle.
 
     when previousThrottle <> mythrottle then
     {
-        print "Adjusting RCS...".
-        print "mythrottle: " + mythrottle.
-        print "prevthortt: " + previousThrottle.
+        print "Adjusting RCS..." at (0,3).
+        print "mythrottle: " + mythrottle at (0,4).
+        print "prevthortt: " + previousThrottle at (0,5).
         if mythrottle > 0 { set ship:control:fore to 1. }
         else { set ship:control:fore to 0. }.
 
@@ -101,7 +101,7 @@ set a  to ((ship:altitude + ship:body:radius) +
            (apoapsis + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
-print "Starting first burn.".
+print "Starting first burn." at (0,3).
 burnUntil(v1, v2).
 
 
@@ -109,8 +109,8 @@ burnUntil(v1, v2).
 
 set pe1 to ship:altitude.
 
-print "Pe1: " + pe1 at (0,32).
-print "Pe2: " + periapsis at (0,33).
+print "Pe1: " + pe1 at (0,6).
+print "Pe2: " + periapsis at (0,7).
 
 if pe1 > periapsis and ap1 > apoapsis { run warppe.sh. }.
 else { run warpap.sh. }
@@ -122,5 +122,5 @@ set a to ((periapsis + ship:body:radius) +
           (apoapsis  + ship:body:radius)) / 2.
 set v2 to sqrt(mu * (2/r - 1/a)).
 
-print "Starting second burn.".
+print "Starting second burn." at (0,3).
 burnUntil(v1, v2).

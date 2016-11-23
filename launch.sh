@@ -10,7 +10,7 @@ declare function getPitch
     {
         set pitch to pitch * 5.
     }
-    print "pitch: " + pitch at (0,16).
+    print "pitch: " + pitch at (0,8).
     return pitch.
 }.
 
@@ -24,11 +24,11 @@ set ship:control:pilotmainthrottle to 0.
 set kuniverse:timewarp:rate to 10000.
 wait until round(ship:orbit:lan) = round(target:orbit:lan) - 25.
 set kuniverse:timewarp:rate to 100.
-wait until round(ship:orbit:lan) = round(target:orbit:lan) - 1.
+wait until round(ship:orbit:lan) = round(target:orbit:lan) - 2.
 set kuniverse:timewarp:rate to 1.
 wait until kuniverse:timewarp:rate = 1.
 
-print "ready to launch.".
+print "ready to launch." at (0,3).
 
 set mythrottle to 1.0.
 
@@ -40,11 +40,11 @@ stage.
 
 when maxthrust = 0 then
 {
-    print "staging...".
+    print "staging..." at (0,3).
     stage.
     set mythrottle to 1.0.
     stage.
-    if stage:count = 1
+    if stage:number = 1
     {
         return false.
     }
@@ -67,8 +67,8 @@ until ship:periapsis > 140000
         wait 0.5.
     }.
 
-    print "orbital velocity: " + ship:velocity:orbit:mag at (0,15).
-    print "acceleration: " + ship:sensors:acc:mag at (0, 17).
+    print "orbital velocity: " + ship:velocity:orbit:mag at (0,9).
+    print "acceleration: " + ship:sensors:acc:mag at (0, 10).
 }.
 
 lock steering to ship:prograde.

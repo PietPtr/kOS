@@ -52,4 +52,4 @@ run "rendezvous-intercept.sh".
 
 // ----------- APPROACH -----------
 
-// run "rendezvous-approach.sh".
+run "rendezvous-approach.sh".
