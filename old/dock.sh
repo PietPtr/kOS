@@ -23,7 +23,12 @@ declare function cvp
     {
         set v to v * -1.
     }
-    return v:mag.
+    return v.
+}
+
+declare function cancelVelocity
+{
+
 }
 
 rcs off.
@@ -51,10 +56,6 @@ lock dz to ship:controlpart:position:z - target:position:z.
 lock relativeVelocity to ship:orbit:velocity:orbit -
                          targetShip:orbit:velocity:orbit.
 
-// lock vx to ship:orbit:velocity:orbit:x - targetShip:orbit:velocity:orbit:x.
-// lock vy to ship:orbit:velocity:orbit:y - targetShip:orbit:velocity:orbit:y.
-// lock vz to ship:orbit:velocity:orbit:z - targetShip:orbit:velocity:orbit:z.
-
 lock fore_sv to ship:facing:vector.
 lock starboard_sv to (ship:facing + R(0, 90, 0)):vector.
 lock top_sv to (ship:facing + R(90, 0, 0)):vector.
@@ -63,20 +64,24 @@ lock vx to cvp(fore_sv).
 lock vy to cvp(starboard_sv).
 lock vz to cvp(top_sv).
 
+
 until false
 {
     print "dx: " + dx at (0, 16).
     print "dy: " + dy at (0, 17).
     print "dz: " + dz at (0, 18).
     print "vx: " + vx at (0, 19).
-    print "vy: " + vy at (0, 20).
-    print "vz: " + vz at (0, 21).
-    print "rv: " + relativeVelocity at (0, 22).
+    print "vy: " + vy at (0, 21).
+    print "vz: " + vz at (0, 23).
+    // print "rvx: " + relativeVelocity:x at (0, 22).
+    // print "rvy: " + relativeVelocity:y at (0, 23).
     wait(0.01).
 }
 
+// cancel all velocity relative to the target
+
 // make sure dx is negative.
-until dx <= 0
+until dx <= -5
 {
     set ship:control:fore to 0.2.
     wait until vx > 1.

@@ -1,4 +1,4 @@
-declare parameter height is 500.
+declare parameter height is 30000.
 declare parameter hoverTime is 10.
 declare parameter countdown is false.
 
@@ -35,6 +35,8 @@ declare function hover
     print "fuel left:  " + fuel at (0,12).
 
 }
+
+set MSGFILL to "".
 
 set ship:control:pilotmainthrottle to 0.
 
@@ -114,7 +116,7 @@ until ship:verticalspeed <= 0
 
 set hoverStart to time:seconds.
 
-brakes on.
+// brakes on.
 
 until time:seconds - hoverStart >= hoverTime
 {
