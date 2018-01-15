@@ -1,0 +1,64 @@
+SAS OFF.
+
+
+LOCK STEERING TO steering_launch().
+LOCK THROTTLE TO 1.0.
+
+set goal_height to 150000.
+set stageN to 0.
+
+LIST ENGINES IN elist.
+
+Stage.
+
+UNTIL 0 {
+	WAIT 0.1.
+
+	FOR e IN elist {
+        IF e:FLAMEOUT {
+			STAGE.
+			UNTIL STAGE:READY {
+	            WAIT 0.
+	        }
+	        STAGE.
+	        LIST ENGINES IN elist.
+	    }
+	}
+
+	if stageN = 0 and ALT:APOAPSIS > goal_height {
+		LOCK THROTTLE TO 0.0.
+		set stageN to 1.
+	}
+
+	if stageN = 1 and ETA:APOAPSIS < 20 {
+		LOCK THROTTLE TO throttle_circularisation().
+		set stageN to 2.
+		LOCK steering TO steering_circularisation().
+	}
+
+	if stageN = 2 and ORBIT:eccentricity < 0.00005 {
+		LOCK THROTTLE TO 0.0.
+		set stageN to 3.
+	}
+
+}
+
+function steering_launch {
+	set height to ALT:APOAPSIS * 1.00.
+	if height > goal_height
+		return Up + R(0, -90, 180).
+	return Up + R(0, -height / goal_height * 90, 180).
+}
+
+function steering_circularisation {
+	set position to ETA:APOAPSIS / ORBIT:PERIOD.
+	return UP + R(0, -position * 360 - 90, 180).
+}
+
+function throttle_circularisation {
+	if (ALT:periapsis < 0) {
+		return 1.0.
+	}
+	PRINT (1 - (ALT:PERIAPSIS / goal_height)).
+	return 1 - (ALT:periapsis / goal_height).
+}
