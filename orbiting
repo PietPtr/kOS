@@ -4,14 +4,14 @@ SAS OFF.
 LOCK STEERING TO steering_launch().
 LOCK THROTTLE TO 1.0.
 
-set goal_height to 150000.
+set goal_height to 100000 + 450.
 set stageN to 0.
 
 LIST ENGINES IN elist.
 
 Stage.
 
-UNTIL 0 {
+UNTIL stageN = 3 {
 	WAIT 0.1.
 
 	FOR e IN elist {
@@ -36,7 +36,7 @@ UNTIL 0 {
 		LOCK steering TO steering_circularisation().
 	}
 
-	if stageN = 2 and ORBIT:eccentricity < 0.00005 {
+	if stageN = 2 and ORBIT:eccentricity < 0.0000001 {
 		LOCK THROTTLE TO 0.0.
 		set stageN to 3.
 	}
@@ -56,6 +56,14 @@ function steering_circularisation {
 }
 
 function throttle_circularisation {
+	if (ORBIT:eccentricity * 50 > 1) {
+		return 1.0.
+	}
+	PRINT (ORBIT:eccentricity * 50).
+	return ORBIT:eccentricity * 50.
+}
+
+function throttle_circularisation_old {
 	if (ALT:periapsis < 0) {
 		return 1.0.
 	}
